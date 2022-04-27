@@ -29,5 +29,9 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'open-weather-api' => [
+        'uri' => env('OPEN_WEATHER_API_URI','https://api.openweathermap.org/data/2.5/weather'),
+        'token' => env('OPEN_WEATHER_API_TOKEN'),
+    ],
 
 ];
