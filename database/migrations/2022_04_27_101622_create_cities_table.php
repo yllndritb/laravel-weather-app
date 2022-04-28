@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWeatherForecastsTable extends Migration
+class CreateCitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateWeatherForecastsTable extends Migration
      */
     public function up()
     {
-        Schema::create('weather_forecasts', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->string('city');
+            $table->string('name')->unique();
             $table->float('lon');
             $table->float('lat');
-            $table->json('open_weather_api_data');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateWeatherForecastsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('weather_forecasts');
+        Schema::dropIfExists('cities');
     }
 }

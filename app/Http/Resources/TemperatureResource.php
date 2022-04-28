@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 
-class WeatherForecastResource extends JsonResource
+class TemperatureResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,11 +18,12 @@ class WeatherForecastResource extends JsonResource
     public function toArray($request): array|JsonSerializable|Arrayable
     {
         return [
-            'date' => $this->date,
-            'city' => $this->city,
-            'lat' => $this->lat,
-            'lon' => $this->lon,
-            'open_weather_api_data' => new OpenWeatherMapResource($this->open_weather_api_data),
+            'day' => $this->day,
+            'min' => $this->min,
+            'max' => $this->max,
+            'night' => $this->night,
+            'eve' => $this->eve,
+            'morn' => $this->morn,
         ];
     }
 }

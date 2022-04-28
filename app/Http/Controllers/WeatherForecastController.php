@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\GetForecastForDateAction;
+use App\Http\Requests\IndexWeatherForecastRequest;
 use App\Http\Requests\StoreWeatherForecastRequest;
 use App\Http\Requests\UpdateWeatherForecastRequest;
 use App\Http\Resources\WeatherForecastResource;
 use App\Models\WeatherForecast;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class WeatherForecastController extends Controller
@@ -13,11 +16,10 @@ class WeatherForecastController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(GetForecastForDateAction $getForecastForDateAction, IndexWeatherForecastRequest $request): AnonymousResourceCollection
     {
-        return WeatherForecastResource::collection(WeatherForecast::all());
+        return WeatherForecastResource::collection($getForecastForDateAction->execute(Carbon::parse($request->validated()['date'])));
     }
 
     /**
@@ -40,7 +42,6 @@ class WeatherForecastController extends Controller
     public function show(WeatherForecast $weatherForecast): WeatherForecastResource
     {
         return new WeatherForecastResource($weatherForecast);
-
     }
 
     /**

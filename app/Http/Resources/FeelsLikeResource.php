@@ -7,16 +7,21 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 
-class ApiWeatherForecastResource extends JsonResource
+class FeelsLikeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array|Arrayable|JsonSerializable
      */
     public function toArray($request): array|JsonSerializable|Arrayable
     {
-        return parent::toArray($request);
+        return [
+            'day' => $this->day,
+            'night' => $this->night,
+            'eve' => $this->eve,
+            'morn' => $this->morn,
+        ];
     }
 }

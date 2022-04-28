@@ -29,9 +29,14 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'open-weather-api' => [
-        'uri' => env('OPEN_WEATHER_API_URI','https://api.openweathermap.org/data/2.5/weather'),
-        'token' => env('OPEN_WEATHER_API_TOKEN'),
+    'open-weather-map' => [
+        'uri' => env('OPEN_WEATHER_MAP_URI','https://api.openweathermap.org/data/2.5'),
+        'key' => env('OPEN_WEATHER_MAP_KEY'),
+        'timeout' => env('OPEN_WEATHER_MAP_TIMEOUT', 10),
+        'retry' => [
+            'times' => env('OPEN_WEATHER_MAP_RETRY_TIMES', null),
+            'sleep' => env('OPEN_WEATHER_MAP_RETRY_SLEEP', null),
+        ]
     ],
 
 ];
