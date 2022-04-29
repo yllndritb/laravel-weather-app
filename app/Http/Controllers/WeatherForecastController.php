@@ -2,70 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\FetchAndSyncWeatherForecastDataAction;
 use App\Actions\GetForecastForDateAction;
-use App\Http\Requests\IndexWeatherForecastRequest;
+use App\Http\Requests\DeleteWeatherForecastRequest;
+use App\Http\Requests\ShowWeatherForecastRequest;
 use App\Http\Requests\StoreWeatherForecastRequest;
 use App\Http\Requests\UpdateWeatherForecastRequest;
 use App\Http\Resources\WeatherForecastResource;
+use App\Models\City;
 use App\Models\WeatherForecast;
 use Carbon\Carbon;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class WeatherForecastController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     */
-    public function index(GetForecastForDateAction $getForecastForDateAction, IndexWeatherForecastRequest $request): AnonymousResourceCollection
-    {
-        return WeatherForecastResource::collection($getForecastForDateAction->execute(Carbon::parse($request->validated()['date'])));
-    }
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param StoreWeatherForecastRequest $request
-     * @return WeatherForecastResource
+     * @param FetchAndSyncWeatherForecastDataAction $fetchAndSyncWeatherForecastDataAction
+     * @return JsonResponse
+     * @throws RequestException
      */
-    public function store(StoreWeatherForecastRequest $request): WeatherForecastResource
+    public function store(StoreWeatherForecastRequest $request, FetchAndSyncWeatherForecastDataAction $fetchAndSyncWeatherForecastDataAction): JsonResponse
     {
-        return new WeatherForecastResource(WeatherForecast::create($request->validated()));
+        $weatherForecast = $fetchAndSyncWeatherForecastDataAction->execute(City::all(), Carbon::parse($request->validated()['date']));
+        return response()->json(WeatherForecastResource::collection($weatherForecast), Response::HTTP_CREATED);
+
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param WeatherForecast $weatherForecast
-     * @return WeatherForecastResource
+     * @param GetForecastForDateAction $getForecastForDateAction
+     * @param ShowWeatherForecastRequest $request
+     * @return JsonResponse
+     * @throws RequestException
      */
-    public function show(WeatherForecast $weatherForecast): WeatherForecastResource
+    public function show(GetForecastForDateAction $getForecastForDateAction, ShowWeatherForecastRequest $request): JsonResponse
     {
-        return new WeatherForecastResource($weatherForecast);
+        return response()->json(WeatherForecastResource::collection($getForecastForDateAction->execute(Carbon::parse($request->validated()['date']))), Response::HTTP_OK);
+
     }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param UpdateWeatherForecastRequest $request
-     * @param WeatherForecast $weatherForecast
-     * @return WeatherForecastResource
+     * @param FetchAndSyncWeatherForecastDataAction $fetchAndSyncWeatherForecastDataAction
+     * @return JsonResponse
+     * @throws RequestException
      */
-    public function update(UpdateWeatherForecastRequest $request, WeatherForecast $weatherForecast): WeatherForecastResource
+    public function update(UpdateWeatherForecastRequest $request, FetchAndSyncWeatherForecastDataAction $fetchAndSyncWeatherForecastDataAction): JsonResponse
     {
-        $weatherForecast->update($request->validated());
-        return new WeatherForecastResource($weatherForecast);
+        $weatherForecast = $fetchAndSyncWeatherForecastDataAction->execute(City::all(), Carbon::parse($request->validated()['date']));
+        return response()->json(WeatherForecastResource::collection($weatherForecast), Response::HTTP_OK);
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param WeatherForecast $weatherForecast
-     * @return WeatherForecastResource
+     * @param DeleteWeatherForecastRequest $request
+     * @return JsonResponse
      */
-    public function destroy(WeatherForecast $weatherForecast): WeatherForecastResource
+    public function destroy(DeleteWeatherForecastRequest $request): JsonResponse
     {
-        $weatherForecast->delete();
-        return new WeatherForecastResource($weatherForecast);
+        WeatherForecast::query()->where('date', Carbon::parse($request->validated()['date']))->delete();
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }

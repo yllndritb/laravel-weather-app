@@ -20,6 +20,7 @@ class WeatherForecast extends Model
     ];
 
     protected $casts = [
-        'open_weather_api_data' => OpenWeatherApiCast::class
+        'open_weather_api_data' => OpenWeatherApiCast::class,
+        'date' => 'date',
     ];
 }

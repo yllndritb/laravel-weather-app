@@ -13,6 +13,8 @@ use Illuminate\Support\Collection;
 class GetForecastForDateAction
 {
 
+
+
     /**
      * @param FetchAndSyncWeatherForecastDataAction $fetchAndSyncWeatherForecastDataAction
      */
@@ -30,16 +32,12 @@ class GetForecastForDateAction
      */
     public function execute(Carbon $date): Collection|RequestException
     {
-        $now = Carbon::now();
-
-        if ($date > $now && $now->diffInDays($date) > 7) abort(404);
-
         $weatherForecast = WeatherForecast::where('date', $date->format('Y-m-d'))->get();
         if ($weatherForecast->count() > 0) return $weatherForecast;
 
         $apiWeatherForecast = $this->fetchAndSyncWeatherForecastDataAction->execute(City::all(), $date);
         if ($apiWeatherForecast->count() > 0) return $apiWeatherForecast;
 
-        abort(404);
+        abort(404,"Weather forecast for specified date was not found!");
     }
 }

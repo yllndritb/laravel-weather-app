@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Events\WeatherForecastDataFetchedEvent;
 use Carbon\Carbon;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Collection;
@@ -34,7 +35,7 @@ class FetchAndSyncWeatherForecastDataAction
         foreach ($cities as $city) {
             $weatherForecast = $this->fetchWeatherForecastDataAction->execute($city, $date);
             if ($weatherForecast) {
-                $this->syncWeatherForecastDataAction->execute($weatherForecast);
+                WeatherForecastDataFetchedEvent::dispatch($weatherForecast);
                 $weatherForecastArr[] = $weatherForecast;
             }
         }

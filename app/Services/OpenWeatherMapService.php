@@ -46,9 +46,9 @@ class OpenWeatherMapService implements ServiceContract
     }
 
     /**
-     * @return ResourceContract
+     * @return WeatherForecastResource
      */
-    public function weatherForecast(): ResourceContract
+    public function weatherForecast(): WeatherForecastResource
     {
         return new WeatherForecastResource(
             service: $this,

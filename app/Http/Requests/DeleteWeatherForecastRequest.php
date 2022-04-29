@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreWeatherForecastRequest extends FormRequest
+class DeleteWeatherForecastRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class StoreWeatherForecastRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => 'required|date|unique:weather_forecasts,date'
+            'date' => 'required|date'
         ];
     }
 }

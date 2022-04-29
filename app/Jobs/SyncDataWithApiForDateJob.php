@@ -2,10 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Actions\FetchAndSyncWeatherForecastDataAction;
+use App\Actions\FetchWeatherForecastDataAction;
+use App\Actions\SyncWeatherForecastDataAction;
 use App\Models\City;
-use App\Models\WeatherForecast;
-use App\Services\OpenWeatherMapService;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,8 +33,13 @@ class SyncDataWithApiForDateJob implements ShouldQueue
      * @return void
      * @throws RequestException
      */
-    public function handle(FetchAndSyncWeatherForecastDataAction $fetchAndSyncWeatherForecastDataAction)
+    public function handle(FetchWeatherForecastDataAction $fetchWeatherForecastDataAction, SyncWeatherForecastDataAction $syncWeatherForecastDataAction)
     {
-        $fetchAndSyncWeatherForecastDataAction->execute(City::all(), $this->date);
+        foreach (City::all() as $city) {
+            $weatherForecast = $fetchWeatherForecastDataAction->execute($city, $this->date);
+            if ($weatherForecast) {
+                $syncWeatherForecastDataAction->execute($weatherForecast);
+            }
+        }
     }
 }

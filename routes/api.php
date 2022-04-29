@@ -20,9 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('/weather-forecast')->controller(WeatherForecastController::class)->group(function () {
-    Route::get('/', 'index')->name('weather.index');
-    Route::get('/{weatherForecast}', 'show')->name('weather.show');
-    Route::put('/{weatherForecast}', 'update')->name('weather.update');
+    Route::get('/', 'show')->name('weather.show');
+    Route::put('/', 'update')->name('weather.update');
     Route::post('/', 'store')->name('weather.store');
-    Route::delete('/{weatherForecast}', 'delete')->name('weather.delete');
+    Route::delete('/', 'destroy')->name('weather.destroy');
 });
